@@ -1,0 +1,48 @@
+```{r}
+# Perform the statistical analysis
+library(agricolae) #for using the function HSD.test
+
+aov<-aov(X~Y, data = data)
+HSD<- HSD.test(aov, "Y", console = TRUE, group = TRUE)
+
+# Export the significance labels in a dataframe
+
+library(dplyr)
+HSD.df<-HSD$groups%>%
+             as.data.frame()%>%
+             mutate(groupID= row.names(HSD$groups), 
+                         lab = paste(groups, round(Y, 2), sep = "\n"))
+HSD.df$groupID<-factor(HSD$groupID, 
+                            levels = levels(data$Y)
+                                   )
+
+# Use the dataframe to label your plots
+
+library(ggpubr) #works also with ggplot
+
+data%>% 
+  ggbarplot(. , x = "X", y = "Y", 
+            combine = TRUE,
+            desc_stat = "mean_se", 
+            error.plot = "errorbar",
+            add= c("mean_se"),
+            #facet.by = ,
+            color = "pop_dapc8_ID", 
+            palette = palette,
+            #label = TRUE,
+            #lab.nb.digits = 2,
+            label = HSD.df$groups,
+            font.label = list(size = 16, face = "plain", color ="black"),
+            font.family = "Lexend Deca",
+            lab.vjust = -3,
+            #ylim = c(0, 90),
+            #position = position_dodge(0.9) ,# Adjust the space between bars
+            ggtheme = theme_classic2()
+            )+
+  labs(x = "Genotype", y = "GlcE (% Glc)", color = "Genetic\ngroup")+
+  facet_grid(.~pop_dapc8_ID, scales = "free", space = "free")+
+  my_theme.2
+
+
+
+```
