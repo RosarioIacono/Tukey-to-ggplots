@@ -27,7 +27,7 @@ data%>%
             error.plot = "errorbar",
             add= c("mean_se"),
             #facet.by = ,
-            color = "pop_dapc8_ID", 
+            color = "group", 
             palette = palette,
             #label = TRUE,
             #lab.nb.digits = 2,
@@ -40,9 +40,7 @@ data%>%
             ggtheme = theme_classic2()
             )+
   labs(x = "Genotype", y = "GlcE (% Glc)", color = "Genetic\ngroup")+
-  facet_grid(.~pop_dapc8_ID, scales = "free", space = "free")+
-  my_theme.2
-
+  facet_grid(.~group, scales = "free", space = "free")
 
 
 ```
